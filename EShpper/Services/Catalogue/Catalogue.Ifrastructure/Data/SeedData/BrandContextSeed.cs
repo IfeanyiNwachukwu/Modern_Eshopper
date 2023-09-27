@@ -13,6 +13,7 @@ namespace Catalogue.Infrastructure.Data.SeedData
     {
         public static void SeedData(IMongoCollection<ProductBrand> brandCollection)
         {
+            //Check if collection has alread been seeded
             bool checkBrands = brandCollection.Find(b => true).Any();
             string path = Path.Combine("Data", "SeedData", "brands.json");
 
