@@ -9,7 +9,8 @@ namespace Catalogue.Infrastructure.Data.SeedData
         public static void SeedData(IMongoCollection<ProductType> typeCollection)
         {
             bool checkTypes = typeCollection.Find(b => true).Any();
-            string path = Path.Combine("Data", "SeedData", "types.json");
+            var filePath = @"C:\Users\USER\source\repos\Modern_Eshopper\EShpper\Services\Catalogue\Catalogue.Ifrastructure\Data\SeedData";
+            string path = Path.Combine(filePath, "types.json");
 
             if (!checkTypes)
             {

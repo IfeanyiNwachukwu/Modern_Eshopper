@@ -15,7 +15,8 @@ namespace Catalogue.Infrastructure.Data.SeedData
         {
             //Check if collection has alread been seeded
             bool checkBrands = brandCollection.Find(b => true).Any();
-            string path = Path.Combine("Data", "SeedData", "brands.json");
+            var filePath = @"C:\Users\USER\source\repos\Modern_Eshopper\EShpper\Services\Catalogue\Catalogue.Ifrastructure\Data\SeedData";
+            string path = Path.Combine(filePath, "brands.json");
 
             if (!checkBrands)
             {

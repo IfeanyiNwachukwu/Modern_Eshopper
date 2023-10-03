@@ -23,7 +23,7 @@ namespace Catalogue.Infrastructure.Data.SeedData
 
             Types = database.GetCollection<ProductType>(configuration.GetValue<string>("DatabaseSettings:TypesCollection"));
 
-            Products = database.GetCollection<Product>(configuration.GetValue<string>("DatabaseSettings:CollectionnName"));
+            Products = database.GetCollection<Product>(configuration.GetValue<string>("DatabaseSettings:CollectionName"));
 
             BrandContextSeed.SeedData(Brands);
             TypeContextSeed.SeedData(Types);
