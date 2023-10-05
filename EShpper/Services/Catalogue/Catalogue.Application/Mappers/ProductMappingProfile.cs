@@ -2,6 +2,7 @@
 using Catalogue.Application.Commands;
 using Catalogue.Application.Responses;
 using Catalogue.Core.Entities;
+using Catalogue.Core.Specs;
 
 namespace Catalogue.Application.Mappers
 {
@@ -13,7 +14,7 @@ namespace Catalogue.Application.Mappers
             CreateMap<Product, CreateProductCommand>().ReverseMap();
             CreateMap<ProductBrand, BrandResponse>().ReverseMap();
             CreateMap<ProductType, TypesResponse>().ReverseMap();
-            //CreateMap<Pagination<Product>, Pagination<ProductResponse>>().ReverseMap();
+            CreateMap<Pagination<Product>, Pagination<ProductResponse>>().ReverseMap();
         }
        
     }

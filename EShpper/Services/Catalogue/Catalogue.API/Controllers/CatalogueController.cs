@@ -1,6 +1,7 @@
 ﻿using Catalogue.Application.Commands;
 using Catalogue.Application.Queries;
 using Catalogue.Application.Responses;
+using Catalogue.Core.Specs;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -44,14 +45,33 @@ namespace Catalogue.API.Controllers
             return Ok(result);
         }
 
+        //[HttpGet]
+        //[Route("GetAllProducts")]
+        //[ProducesResponseType(typeof(IList<ProductResponse>), (int)HttpStatusCode.OK)]
+        //public async Task<ActionResult<IList<ProductResponse>>> GetAllProducts()
+        //{
+        //    var query = new GetAllProductsQuery();
+        //    var result = await _mediator.Send(query);
+        //    return Ok(result);
+        //}
+
         [HttpGet]
         [Route("GetAllProducts")]
         [ProducesResponseType(typeof(IList<ProductResponse>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<IList<ProductResponse>>> GetAllProducts()
+        public async Task<ActionResult<IList<ProductResponse>>> GetAllProducts([FromQuery] CatalogueSpecParams catalogueSpecParams)
         {
-            var query = new GetAllProductsQuery();
-            var result = await _mediator.Send(query);
-            return Ok(result);
+            try
+            {
+                var query = new GetAllProductsQuery(catalogueSpecParams);
+                var result = await _mediator.Send(query);
+                //_logger.LogInformation("All products retrieved");
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                //_logger.LogError(e, "An Exception has occured: {Exception}");
+                throw;
+            }
         }
 
         [HttpGet]

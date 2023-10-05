@@ -14,8 +14,17 @@ namespace Catalogue.Infrastructure.Data.SeedData
         public static void SeedData(IMongoCollection<Product> productCollection)
         {
             bool checkProducts = productCollection.Find(b => true).Any();
-            var filePath = @"C:\Users\USER\source\repos\Modern_Eshopper\EShpper\Services\Catalogue\Catalogue.Ifrastructure\Data\SeedData";
-            string path = Path.Combine(filePath, "products.json");
+          
+            //This will give us the full name path of the executable file:
+            //i.e. C:\Program Files\MyApplication\MyApplication.exe
+            string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            //This will strip just the working path name:
+            //C:\Program Files\MyApplication
+            string strWorkPath = Path.GetDirectoryName(strExeFilePath);
+
+            string path = Path.Combine(strWorkPath, "Data", "SeedData", "products.json");
+
+
 
             if (!checkProducts)
             {

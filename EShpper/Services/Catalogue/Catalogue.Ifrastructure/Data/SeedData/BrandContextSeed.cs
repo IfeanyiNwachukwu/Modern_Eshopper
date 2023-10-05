@@ -1,11 +1,6 @@
 ﻿using Catalogue.Core.Entities;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Catalogue.Infrastructure.Data.SeedData
 {
@@ -15,8 +10,17 @@ namespace Catalogue.Infrastructure.Data.SeedData
         {
             //Check if collection has alread been seeded
             bool checkBrands = brandCollection.Find(b => true).Any();
-            var filePath = @"C:\Users\USER\source\repos\Modern_Eshopper\EShpper\Services\Catalogue\Catalogue.Ifrastructure\Data\SeedData";
-            string path = Path.Combine(filePath, "brands.json");
+           
+            //This will give us the full name path of the executable file:
+             string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            
+            //This will strip just the working path name:
+            string strWorkPath = Path.GetDirectoryName(strExeFilePath);
+
+         
+
+
+            string path = Path.Combine(strWorkPath, "Data", "SeedData", "brands.json");
 
             if (!checkBrands)
             {

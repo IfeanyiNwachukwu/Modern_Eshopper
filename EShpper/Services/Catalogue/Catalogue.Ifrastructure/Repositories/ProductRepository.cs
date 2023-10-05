@@ -1,5 +1,6 @@
 ﻿using Catalogue.Core.Entities;
 using Catalogue.Core.Repositories;
+using Catalogue.Core.Specs;
 using Catalogue.Infrastructure.Data.SeedData;
 using MongoDB.Driver;
 
@@ -59,16 +60,98 @@ namespace Catalogue.Infrastructure.Repositories
             return await _context.Products.Find(filter).ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetProducts()
+        //public async Task<IEnumerable<Product>> GetProducts()
+        //{
+        //    return await _context.Products.Find(p => true).ToListAsync();
+        //}
+        public async Task<Pagination<Product>> GetProducts(CatalogueSpecParams catalogueSpecParams)
         {
-            return await _context.Products.Find(p => true).ToListAsync();
-        }
+            var builder = Builders<Product>.Filter;
 
+            var filter = builder.Empty;
+            if (!string.IsNullOrEmpty(catalogueSpecParams.Search))
+            {
+                var searchFilter = builder.Regex(x => x.Name, new MongoDB.Bson.BsonRegularExpression(catalogueSpecParams.Search));
+
+                filter &= searchFilter;
+            }
+
+            if (!string.IsNullOrEmpty(catalogueSpecParams.BrandId))
+            {
+                var brandFilter = builder.Eq(x => x.Brands.Id, catalogueSpecParams.BrandId); 
+
+                filter &= brandFilter;
+            }
+
+            if (!string.IsNullOrEmpty(catalogueSpecParams.TypeId))
+            {
+                var typeFilter = builder.Eq(x => x.Brands.Id, catalogueSpecParams.TypeId);
+
+                filter &= typeFilter;
+            }
+
+            if (!string.IsNullOrEmpty(catalogueSpecParams.Sort))
+            {
+                return new Pagination<Product>
+                {
+                    PageSize = catalogueSpecParams.PageSize,
+                    PageIndex = catalogueSpecParams.PageIndex,
+                    Data = await DataFilter(catalogueSpecParams, filter),
+                    Count = await _context.Products.CountDocumentsAsync(p =>
+                        true) //TODO: Need to check while applying with UI
+                };
+            }
+
+            return new Pagination<Product>()
+            {
+                PageSize = catalogueSpecParams.PageSize,
+                PageIndex = catalogueSpecParams.PageIndex,
+                Data = await _context
+                    .Products
+                    .Find(filter)
+                    .Sort(Builders<Product>.Sort.Ascending("Name"))
+                    .Skip(catalogueSpecParams.PageSize * (catalogueSpecParams.PageIndex - 1))
+                    .Limit(catalogueSpecParams.PageSize)
+                    .ToListAsync(),
+                Count = await _context.Products.CountDocumentsAsync(p => true)
+            };
+        }
         public async Task<bool> UpdateProduct(Product product)
         {
             var updateResult = await _context.Products.ReplaceOneAsync(p => p.Id == product.Id, product);
 
             return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
+        }
+
+        private async Task<IReadOnlyList<Product>> DataFilter(CatalogueSpecParams catalogSpecParams, FilterDefinition<Product> filter)
+        {
+            switch (catalogSpecParams.Sort)
+            {
+                case "priceAsc":
+                    return await _context
+                        .Products
+                        .Find(filter)
+                        .Sort(Builders<Product>.Sort.Ascending("Price"))
+                        .Skip(catalogSpecParams.PageSize * (catalogSpecParams.PageIndex - 1))
+                        .Limit(catalogSpecParams.PageSize)
+                        .ToListAsync();
+                case "priceDesc":
+                    return await _context
+                        .Products
+                        .Find(filter)
+                        .Sort(Builders<Product>.Sort.Descending("Price"))
+                        .Skip(catalogSpecParams.PageSize * (catalogSpecParams.PageIndex - 1))
+                        .Limit(catalogSpecParams.PageSize)
+                        .ToListAsync();
+                default:
+                    return await _context
+                        .Products
+                        .Find(filter)
+                        .Sort(Builders<Product>.Sort.Ascending("Name"))
+                        .Skip(catalogSpecParams.PageSize * (catalogSpecParams.PageIndex - 1))
+                        .Limit(catalogSpecParams.PageSize)
+                        .ToListAsync();
+            }
         }
     }
 }
