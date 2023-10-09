@@ -6,14 +6,41 @@ services:
     restart: always
     ports:
      - "27017:27017"
-    #volumes:
-    # - mongo_data
+    volumes:
+     - /data/db
 
   basketdb:
     container_name: basketdb
     restart: always
     ports:
      - "6379:6379"
+
+  discountdb:
+    container_name: discountdb
+    environment:
+     - POSTGRES_USER=admin
+     - POSTGRES_PASSWORD=admin1234
+     - POSTGRES_DB=DiscountDb
+    restart: always
+    ports:
+     - "5432:5432"
+    volumes:
+     - postgres_data:/var/lib/postgresql/data/
+
+  pgadmin:
+    container_name: pgadmin
+    environment:
+     - PGADMIN_DEFAULT_EMAIL=ifenwachukwu7@outlook.com
+     - PGSDMIN_DEFAULT_PASSWORD=admin1234
+     - POSTGRES_DB=DiscountDb
+    restart: always
+    ports:
+     - "5050:80"
+    env_file:
+     - C:\Users\USER\Desktop\pgadmin.env
+    volumes:
+     - pgadmin_data:/root/.pgadmin
+
 
   portainer:
     container_name: portainer
@@ -46,7 +73,20 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "CacheSettings__ConnectionString=basketdb:6379"
+      - "GrpcSettings__DiscountUrl=http://discount.api"
     depends_on:
       - basketdb
     ports:
        - "9001:80"
+
+  discount.api:
+    container_name: discount.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "DatabaseSettings__ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=admin1234;"
+      #- "ElasticConfiguration__Uri=http://elasticsearch:9200"
+#      - ASPNETCORE_URLS=http://*:9002          
+    depends_on:
+      - discountdb
+    ports:
+      - "9002:80"

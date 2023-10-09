@@ -3,6 +3,7 @@ using Basket.Application.GrpcService;
 using Basket.Application.Handlers;
 using Basket.Core.Repositories;
 using Basket.Infrastructure.Repositories;
+using Discount.Grpc.Protos;
 using HealthChecks.UI.Client;
 using MassTransit;
 using MediatR;
@@ -63,9 +64,9 @@ namespace Basket.API
             services.AddScoped<IBasketRepository, BasketRepository>();
             //services.AddScoped<ICorrelationIdGenerator, CorrelationIdGenerator>();
             services.AddAutoMapper(typeof(Startup));
-            // services.AddScoped<DiscountGrpcService>();
-            //services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>
-            //    (o => o.Address = new Uri(Configuration["GrpcSettings:DiscountUrl"]));
+            services.AddScoped<DiscountGrpcService>();
+                      services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>
+                (o => o.Address = new Uri(Configuration["GrpcSettings:DiscountUrl"]));
 
             //services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
             //services.AddSwaggerGen(options =>
@@ -122,7 +123,7 @@ namespace Basket.API
             }
 
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("CorsPolicy");
             //app.UseAuthentication();
