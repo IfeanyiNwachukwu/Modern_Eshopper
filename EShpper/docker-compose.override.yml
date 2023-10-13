@@ -27,6 +27,15 @@ services:
     volumes:
      - postgres_data:/var/lib/postgresql/data/
 
+  orderdb:
+    container_name: orderdb
+    environment:
+      SA_PASSWORD: "Ifeanyi1234567"
+      ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+      - "1433:1433"
+
   pgadmin:
     container_name: pgadmin
     environment:
@@ -85,8 +94,22 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - "DatabaseSettings__ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=admin1234;"
       #- "ElasticConfiguration__Uri=http://elasticsearch:9200"
-#      - ASPNETCORE_URLS=http://*:9002          
+      #- ASPNETCORE_URLS=http://*:9002          
     depends_on:
       - discountdb
     ports:
       - "9002:80"
+
+  ordering.api:
+    container_name: ordering.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      #- ASPNETCORE_URLS=http://*:9003
+      - "ConnectionStrings__OrderingConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=Ifeanyi1234567"
+      #- "EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672"
+      #- "ElasticConfiguration__Uri=http://elasticsearch:9200"
+    depends_on:
+      - orderdb
+      #- rabbitmq
+    ports:
+      - "9003:80"

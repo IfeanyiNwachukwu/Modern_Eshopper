@@ -16,6 +16,6 @@ namespace Catalogue.Application.Mappers
             CreateMap<ProductType, TypesResponse>().ReverseMap();
             CreateMap<Pagination<Product>, Pagination<ProductResponse>>().ReverseMap();
         }
-       
+
     }
 }
