@@ -79,24 +79,25 @@ namespace Basket.API
             });
             services.AddHealthChecks()
                 .AddRedis(Configuration["CacheSettings:ConnectionString"], "Redis Health", HealthStatus.Degraded);
-            //services.AddMassTransit(config =>
-            //{
-            //    config.UsingRabbitMq((ct, cfg) =>
-            //    {
-            //        cfg.Host(Configuration["EventBusSettings:HostAddress"]);
-            //    });
-            //});
+            services.AddMassTransit(config =>
+            {
+                config.UsingRabbitMq((ct, cfg) =>
+                {
+                    cfg.Host(Configuration["EventBusSettings:HostAddress"]);
+                });
+            });
+            services.AddMassTransitHostedService();
             //services.AddMassTransitHostedService();
             //Identity Server changes
             // var userPolicy = new AuthorizationPolicyBuilder()
             //     .RequireAuthenticatedUser()
             //     .Build();
-            //
-            // services.AddControllers(config =>
-            // {
-            //     config.Filters.Add(new AuthorizeFilter(userPolicy));
-            // });
-            //
+
+            //services.AddControllers(config =>
+            //{
+            //    config.Filters.Add(new AuthorizeFilter(userPolicy));
+            //});
+
             // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //     .AddJwtBearer(options =>
             //     {
