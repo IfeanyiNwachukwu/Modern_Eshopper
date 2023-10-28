@@ -2,6 +2,12 @@ version: '3.4'
 
 services:
 
+  reverseproxy:
+   
+    build:
+      context: .
+      dockerfile: APIGateways/nginx/nginx.Dockerfile
+
   cataloguedb:
     image: mongo
 
@@ -17,8 +23,8 @@ services:
   rabbitmq:
     image: rabbitmq:3-management-alpine
 
-  pgadmin:
-    image: dpage/pgadmin4
+  #pgadmin:
+  #  image: dpage/pgadmin4
 
   portainer:
     image: portainer/portainer-ce
@@ -48,15 +54,21 @@ services:
       context: .
       dockerfile: Services\Ordering\Ordering.API\Dockerfile
 
-  ocelotapigw:
-    image: ${DOCKER_REGISTRY-}ocelotapigw
+  #ocelotapigw:
+  #  image: ${DOCKER_REGISTRY-}ocelotapigw
+  #  build:
+  #    context: .
+  #    dockerfile: APIGateways/Ocelot.ApiGateway/Dockerfile
+
+  identityserver:
+    image: ${DOCKER_REGISTRY-}identityserver
     build:
       context: .
-      dockerfile: APIGateways/Ocelot.ApiGateway/Dockerfile
+      dockerfile: Infrastructure/EShpper.Identity/Dockerfile
   
 
 volumes:
   mongo_data:
   portainer_data:
   postgres_data:
-  pgadmin_data:
+  #pgadmin_data:

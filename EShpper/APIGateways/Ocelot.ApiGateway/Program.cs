@@ -18,6 +18,7 @@ namespace Ocelot.ApiGateway
                 config.AddJsonFile($"ocelot.{env.HostingEnvironment.EnvironmentName}.json",
                     optional: true,
                     reloadOnChange: true);
+                Console.WriteLine($"ocelot.{env.HostingEnvironment.EnvironmentName}.json");
             }).ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();

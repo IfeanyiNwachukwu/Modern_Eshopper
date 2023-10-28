@@ -6,11 +6,11 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["APIGateways/Ocelot.ApiGateway/Ocelot.ApiGateway.csproj", "APIGateways/Ocelot.ApiGateway/"]
+COPY ["ApiGateways/Ocelot.ApiGateway/Ocelot.ApiGateway.csproj", "ApiGateways/Ocelot.ApiGateway/"]
 
-RUN dotnet restore "APIGateways/Ocelot.ApiGateway/Ocelot.ApiGateway.csproj"
+RUN dotnet restore "ApiGateways/Ocelot.ApiGateway/Ocelot.ApiGateway.csproj"
 COPY . .
-WORKDIR "/src/APIGateways/Ocelot.ApiGateway"
+WORKDIR "/src/ApiGateways/Ocelot.ApiGateway"
 RUN dotnet build "Ocelot.ApiGateway.csproj" -c Release -o /app/build
 
 FROM build AS publish

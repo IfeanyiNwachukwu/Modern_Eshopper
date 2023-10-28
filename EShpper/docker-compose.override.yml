@@ -1,6 +1,21 @@
 version: '3.4'
 
 services:
+
+  reverseproxy:
+    container_name: nginxgateway
+    restart: always
+    ports:
+      - "44344:44344"
+    depends_on:
+      - identityserver
+      - catalogue.api
+      - basket.api
+      - discount.api
+      - ordering.api
+  
+  
+     
   cataloguedb:
     container_name: cataloguedb
     restart: always
@@ -43,19 +58,19 @@ services:
       - "5672:5672"
       - "15672:15672"
 
-  pgadmin:
-    container_name: pgadmin
-    environment:
-     - PGADMIN_DEFAULT_EMAIL=ifenwachukwu7@outlook.com
-     - PGSDMIN_DEFAULT_PASSWORD=admin1234
-     - POSTGRES_DB=DiscountDb
-    restart: always
-    ports:
-     - "5050:80"
-    env_file:
-     - C:\Users\USER\Desktop\pgadmin.env
-    volumes:
-     - pgadmin_data:/root/.pgadmin
+  #pgadmin:
+  #  container_name: pgadmin
+  #  environment:
+  #   - PGADMIN_DEFAULT_EMAIL=ifenwachukwu7@outlook.com
+  #   - PGSDMIN_DEFAULT_PASSWORD=admin1234
+  #   - POSTGRES_DB=DiscountDb
+  #  restart: always
+  #  ports:
+  #   - "5050:80"
+  #  env_file:
+  #   - C:\Users\USER\Desktop\pgadmin.env
+  #  volumes:
+  #   - pgadmin_data:/root/.pgadmin
 
 
   portainer:
@@ -74,6 +89,7 @@ services:
   catalogue.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://*:9000
       - "DatabaseSettings__ConnectionString=mongodb://cataloguedb:27017"
       - "DatabaseSettings__DatabaseName=CatalogueDb"
       - "DatabaseSettings__CollectionName=Products"
@@ -88,12 +104,13 @@ services:
   basket.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://*:9001 
       - "CacheSettings__ConnectionString=basketdb:6379"
       - "GrpcSettings__DiscountUrl=http://discount.api"
       - "EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672"
     depends_on:
       - basketdb
-      - rabbitmq
+      #- rabbitmq
     ports:
        - "9001:80"
 
@@ -101,6 +118,7 @@ services:
     container_name: discount.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://*:9002
       - "DatabaseSettings__ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=admin1234;"
       #- "ElasticConfiguration__Uri=http://elasticsearch:9200"
       #- ASPNETCORE_URLS=http://*:9002          
@@ -113,25 +131,33 @@ services:
     container_name: ordering.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      #- ASPNETCORE_URLS=http://*:9003
+      - ASPNETCORE_URLS=http://*:9003
       - "ConnectionStrings__OrderingConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=Ifeanyi1234567"
       - "EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672"
       #- "ElasticConfiguration__Uri=http://elasticsearch:9200"
     depends_on:
       - orderdb
-      - rabbitmq
+      #- rabbitmq
     ports:
       - "9003:80"
 
-  ocelotapigw:
-    container_name: ocelotapigw
+  #ocelotapigw:
+  #  container_name: ocelotapigw
+  #  environment:
+  #    - ASPNETCORE_ENVIRONMENT=Development      
+  #  depends_on:
+  #    - identityserver
+  #    - catalogue.api
+  #    - basket.api
+  #    - discount.api
+  #    - ordering.api
+  #  ports:
+  #    - "9010:80"
+
+  identityserver:
+    container_name: identityserver
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development      
-    depends_on:
-      #- identityserver
-      - catalogue.api
-      - basket.api
-      - discount.api
-      - ordering.api
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://*:9011 
     ports:
-      - "9010:80"
+      - "9011:9011"
