@@ -2,26 +2,26 @@ version: '3.4'
 
 services:
 
-  reverseproxy:
+  #reverseproxy:
    
-    build:
-      context: .
-      dockerfile: APIGateways/nginx/nginx.Dockerfile
+  #  build:
+  #    context: .
+  #    dockerfile: APIGateways/nginx/nginx.Dockerfile
 
   cataloguedb:
     image: mongo
 
-  basketdb:
-    image: redis
+   basketdb:
+     image: redis
 
-  discountdb:
-    image: postgres
+   discountdb:
+     image: postgres
 
-  orderdb:
-    image: mcr.microsoft.com/mssql/server:2017-latest
+   orderdb:
+     image: mcr.microsoft.com/mssql/server:2017-latest
 
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
+   rabbitmq:
+     image: rabbitmq:3-management-alpine
 
   #pgadmin:
   #  image: dpage/pgadmin4
@@ -60,15 +60,22 @@ services:
   #    context: .
   #    dockerfile: APIGateways/Ocelot.ApiGateway/Dockerfile
 
-  identityserver:
-    image: ${DOCKER_REGISTRY-}identityserver
-    build:
-      context: .
-      dockerfile: Infrastructure/EShpper.Identity/Dockerfile
+  #identityserver:
+  #  image: ${DOCKER_REGISTRY-}identityserver
+  #  build:
+  #    context: .
+  #    dockerfile: Infrastructure/EShpper.Identity/Dockerfile
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.9.2
   
 
 volumes:
   mongo_data:
   portainer_data:
   postgres_data:
+  elasticsearch-data: 
   #pgadmin_data:

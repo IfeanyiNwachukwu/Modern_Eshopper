@@ -1,4 +1,6 @@
 using Catalogue.API;
+using Common.Logging;
+using Serilog;
 
 public  class Program
 {
@@ -13,7 +15,13 @@ public  class Program
             Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =>
             {
-                webBuilder.UseStartup<Startup>();
-            });
+                webBuilder.UseStartup<Startup>()
+              ;
+               
+            })
+
+            .UseSerilog(Logging.ConfigureLogger);
 
 }
+
+

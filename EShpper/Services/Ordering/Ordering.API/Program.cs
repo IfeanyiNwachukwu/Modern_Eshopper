@@ -1,6 +1,8 @@
+using Common.Logging;
 using Ordering.API;
 using Ordering.API.Extensions;
 using Ordering.Infrastructure.Data;
+using Serilog;
 
 public class Program
 {
@@ -20,5 +22,5 @@ public class Program
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();
-            })/*.UseSerilog(Logging.ConfigureLogger)*/;
+            }).UseSerilog(Logging.ConfigureLogger);
 }

@@ -1,4 +1,6 @@
 using Basket.API;
+using Common.Logging;
+using Serilog;
 
 public class Program
 {
@@ -12,5 +14,5 @@ public class Program
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();
-            });
+            }).UseSerilog(Logging.ConfigureLogger);
 }

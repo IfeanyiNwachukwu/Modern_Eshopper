@@ -13,15 +13,15 @@ namespace Catalogue.API.Controllers
     public class CatalogueController : ApiController
     {
         private readonly IMediator _mediator;
-       // private readonly ILogger<CatalogController> _logger;
-      //  private readonly ICorrelationIdGenerator _correlationIdGenerator;
+        private readonly ILogger<CatalogueController> _logger;
+       // private readonly ICorrelationIdGenerator _correlationIdGenerator;
 
-        public CatalogueController(IMediator mediator/*, ILogger<CatalogController> logger, ICorrelationIdGenerator correlationIdGenerator*/)
+        public CatalogueController(IMediator mediator, ILogger<CatalogueController> logger/*, ICorrelationIdGenerator correlationIdGenerator*/)
         {
             _mediator = mediator;
-          //  _logger = logger;
-          //  _correlationIdGenerator = correlationIdGenerator;
-          //  _logger.LogInformation("CorrelationId {correlationId}:", _correlationIdGenerator.Get());
+            _logger = logger;
+            //  _correlationIdGenerator = correlationIdGenerator;
+            //  _logger.LogInformation("CorrelationId {correlationId}:", _correlationIdGenerator.Get());
         }
 
         [HttpGet]
@@ -64,12 +64,12 @@ namespace Catalogue.API.Controllers
             {
                 var query = new GetAllProductsQuery(catalogueSpecParams);
                 var result = await _mediator.Send(query);
-                //_logger.LogInformation("All products retrieved");
+                _logger.LogInformation("All products retrieved");
                 return Ok(result);
             }
             catch (Exception e)
             {
-                //_logger.LogError(e, "An Exception has occured: {Exception}");
+                _logger.LogError(e, "An Exception has occured: {Exception}");
                 throw;
             }
         }
